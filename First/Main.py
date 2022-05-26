@@ -7,8 +7,7 @@ from sklearn import linear_model
 from sklearn import model_selection
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import PolynomialFeatures
-import pickle
-
+import joblib
 
 
 
@@ -79,30 +78,32 @@ df = df.explode('production_companies')
 
 
 ## Applying label encoding on genres, cast and production_companies columns
-le = LabelEncoder()
+le1 = LabelEncoder()
+le2 = LabelEncoder()
+le3 = LabelEncoder()
+
 #df ['original_title']= df['original_title'].astype('category')
 #df.original_title = le.fit_transform(df.original_title)
-df ['genres']=df['genres'].astype('category')
-df.genres=le.fit_transform(df.genres)
-df['cast']=df['cast'].astype('category')
-df.cast=le.fit_transform(df.cast)
+df ['genres']=df['genres'].astype('category')      #
+df.genres=le1.fit_transform(df.genres)          #
+df['cast']=df['cast'].astype('category')   #
+df.cast=le2.fit_transform(df.cast)     #
 #df['keywords']=df['keywords'].astype('category')
 #df.keywords=le.fit_transform(df.keywords)
-df['production_companies']=df['production_companies'].astype('category')
-df.production_companies=le.fit_transform(df.production_companies)
+df['production_companies']=df['production_companies'].astype('category')     #
+df.production_companies=le3.fit_transform(df.production_companies)       #
 #df['director']=df['director'].astype('category')
 #df.director=le.fit_transform(df.director)
-
 
 #df ['release_date']= df['release_date'].astype('category')
 #df.release_date = le.fit_transform(df.release_date)
 
 
-## Applying feature Scaling 
+# Applying feature Scaling 
 scaler = MinMaxScaler()
 scaled= scaler.fit_transform(df)
 print (scaled)
-print(df.corr())
+#print(df.corr())
 
 y=df.net_profit
 x=df.drop('net_profit',axis=1)
@@ -115,10 +116,13 @@ x_train,x_test,y_train,y_test=model_selection.train_test_split(x_poly,y,test_siz
 #applying linear regression 
 reg=linear_model.LinearRegression()
 reg.fit(x_train,y_train)
-TmdbMovieFInalModel='FinalModel.sav'
-pickle.dump(reg,open(TmdbMovieFInalModel, 'wb'))
 print(reg.coef_)
 print(reg.intercept_)
 print(reg.score(x_test,y_test))
+#finalModel='finalModel.sav'
+#joblib.dump(reg,finalModel)
 ##print(df['release_year'].corr(df['net_profit']))
 ##print(df.info())
+
+#ourmodel=joblib.load(finalModel)
+#print(ourmodel.score(x_test,y_test))
